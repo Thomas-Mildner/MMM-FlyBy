@@ -1,6 +1,8 @@
 # MMM-FlyBy
 
-MMM-FlyBy is a [MagicMirror²](https://magicmirror.builders/) module that animates a character flying across the screen at regular intervals. It supports custom images, a gentle bobbing flight path, sparkles, stars, and an optional quiet period at night.
+MMM-FlyBy is a overlay module for MagicMirror² that brings your display to life. It animates custom floating images—from seasonal sprites like Santa Claus to kids' favorite cartoon characters—soaring across your screen with a gentle bobbing flight path, sparkles, and stars.
+
+Easily configure your characters to appear at scheduled times or regular intervals, and utilize the optional nighttime quiet period to keep things distraction-free when needed.
 
 ## Installation
 
