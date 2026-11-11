@@ -4,6 +4,11 @@ MMM-FlyBy is a overlay module for MagicMirror² that brings your display to life
 
 Easily configure your characters to appear at scheduled times or regular intervals, and utilize the optional nighttime quiet period to keep things distraction-free when needed.
 
+## Demo
+<p align="center">
+  <img src="docs/recording.gif" alt="MMM-FlyBy Demo" width="600">
+</p>
+
 ## Installation
 
 ```bash
