@@ -14,13 +14,19 @@ MMM-FlyBy is a [MagicMirror²](https://magicmirror.builders/) module that animat
 Add an entry to the `modules` array in `config/config.js`:
 
 ```js
-{
-	module: "MMM-FlyBy",
-	position: "fullscreen_above",
-	config: {
-		image: "skye.png"
-	}
-}
+  {
+      module: "MMM-FlyBy",
+      position: "fullscreen_above",
+      config: {
+        images: ["skye.png", "chase.png", "marshal.png", "zooma.png"],
+        firstDelay: 1000,
+        interval: 10000,
+        duration: 9000,
+        showSparkles: false,
+        showStars: true,
+        nightHours: null
+      }
+    },
 ```
 
 The module can be configured with these options:
