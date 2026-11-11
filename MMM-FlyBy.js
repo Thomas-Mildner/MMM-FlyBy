@@ -3,7 +3,7 @@
  */
 Module.register("MMM-FlyBy", {
   defaults: {
-    image: "skye.png",     // Datei in modules/MMM-FlyBy/images/ (eigenes Bild, transparenter Hintergrund)
+    image: "example_airplane.png",     // Datei in modules/MMM-FlyBy/images/ (eigenes Bild, transparenter Hintergrund)
     images: [],
     size: 160,             // Breite in px
     interval: 5 * 60 * 1000, // alle 5 Minuten
@@ -22,18 +22,18 @@ Module.register("MMM-FlyBy", {
 
   getDom() {
     const wrapper = document.createElement("div");
-    wrapper.className = "flyingpup-wrapper";
+    wrapper.className = "flyby-wrapper";
     this.sprite = document.createElement("div");
-    this.sprite.className = "flyingpup-sprite";
+    this.sprite.className = "flyby-sprite";
     this.sprite.style.width = this.config.size + "px";
     this.sprite.style.display = "none";
 
     const trail = document.createElement("div");
-    trail.className = "flyingpup-trail";
+    trail.className = "flyby-trail";
     trail.setAttribute("aria-hidden", "true");
     if (this.config.showSparkles) {
       const sparkles = document.createElement("div");
-      sparkles.className = "flyingpup-sparkles";
+      sparkles.className = "flyby-sparkles";
       for (let i = 0; i < 3; i++) {
         sparkles.appendChild(document.createElement("span"));
       }
@@ -41,7 +41,7 @@ Module.register("MMM-FlyBy", {
     }
     if (this.config.showStars) {
       const stars = document.createElement("div");
-      stars.className = "flyingpup-stars";
+      stars.className = "flyby-stars";
       for (let i = 0; i < 3; i++) {
         stars.appendChild(document.createElement("span"));
       }
@@ -50,7 +50,7 @@ Module.register("MMM-FlyBy", {
     this.sprite.appendChild(trail);
 
     const image = document.createElement("img");
-    image.className = "flyingpup-image";
+    image.className = "flyby-image";
     image.src = this.file("images/" + this.config.image);
     image.alt = "";
     this.imageElement = image;
