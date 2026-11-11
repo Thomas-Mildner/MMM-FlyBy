@@ -1,9 +1,9 @@
-/* MagicMirror² Modul: MMM-FlyingPup
+/* MagicMirror² Modul: MMM-FlyBy
  * Lässt eine Figur (eigenes Bild) in Intervallen über den Spiegel fliegen.
  */
-Module.register("MMM-FlyingPup", {
+Module.register("MMM-FlyBy", {
   defaults: {
-    image: "skye.png",     // Datei in modules/MMM-FlyingPup/images/ (eigenes Bild, transparenter Hintergrund)
+    image: "skye.png",     // Datei in modules/MMM-FlyBy/images/ (eigenes Bild, transparenter Hintergrund)
     images: [],
     size: 160,             // Breite in px
     interval: 5 * 60 * 1000, // alle 5 Minuten
@@ -18,7 +18,7 @@ Module.register("MMM-FlyingPup", {
     nightHours: [23, 6]    // keine Flüge in dieser Zeitspanne, null = immer
   },
 
-  getStyles() { return ["MMM-FlyingPup.css"]; },
+  getStyles() { return ["MMM-FlyBy.css"]; },
 
   getDom() {
     const wrapper = document.createElement("div");
