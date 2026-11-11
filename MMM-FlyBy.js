@@ -60,50 +60,81 @@ Module.register("MMM-FlyBy", {
   },
 
   start() {
-    setTimeout(() => {
+    this.stop();
+    this.firstFlightTimeout = setTimeout(() => {
       this.fly();
-      setInterval(() => this.fly(), this.config.interval);
+      this.flightInterval = setInterval(() => this.fly(), this.config.interval);
     }, this.config.firstDelay);
   },
 
+  stop() {
+    clearTimeout(this.firstFlightTimeout);
+    clearInterval(this.flightInterval);
+    this.firstFlightTimeout = null;
+    this.flightInterval = null;
+
+    if (this.animation) {
+      this.animation.cancel();
+      this.animation = null;
+    }
+    if (this.sprite) this.sprite.style.display = "none";
+  },
+
   isNight() {
-    const n = this.config.nightHours;
-    if (!n) return false;
-    const h = new Date().getHours();
-    return n[0] > n[1] ? (h >= n[0] || h < n[1]) : (h >= n[0] && h < n[1]);
+    const nightHours = this.config.nightHours;
+    if (!nightHours) return false;
+
+    const currentHour = new Date().getHours();
+    const [startHour, endHour] = nightHours;
+    return startHour > endHour
+      ? currentHour >= startHour || currentHour < endHour
+      : currentHour >= startHour && currentHour < endHour;
   },
 
   fly() {
-    if (!this.sprite || this.isNight()) return;
-    const c = this.config;
-    if (Array.isArray(c.images) && c.images.length) {
-      const image = c.images[Math.floor(Math.random() * c.images.length)];
-      this.imageElement.src = this.file("images/" + image);
-    }
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    const ltr = c.randomDirection ? Math.random() < 0.5 : true;
-    const y = h * (c.minY + Math.random() * (c.maxY - c.minY)) / 100;
-    const startX = ltr ? -c.size : w + c.size;
-    const endX = ltr ? w + c.size : -c.size;
-    const flip = ltr ? 1 : -1;
+    if (!this.sprite || !this.imageElement || this.isNight()) return;
+    if (this.animation && this.animation.playState === "running") return;
 
-    // Flugbahn mit sanftem Wellenmuster
-    const steps = 96;
+    const config = this.config;
+    if (Array.isArray(config.images) && config.images.length > 0) {
+      const imageIndex = Math.floor(Math.random() * config.images.length);
+      this.imageElement.src = this.file("images/" + config.images[imageIndex]);
+    }
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const leftToRight = !config.randomDirection || Math.random() < 0.5;
+    const flightY = viewportHeight * (
+      config.minY + Math.random() * (config.maxY - config.minY)
+    ) / 100;
+    const startX = leftToRight ? -config.size : viewportWidth + config.size;
+    const endX = leftToRight ? viewportWidth + config.size : -config.size;
+    const horizontalScale = leftToRight ? 1 : -1;
+
+    const frameCount = 96;
     const frames = [];
-    for (let i = 0; i <= steps; i++) {
-      const t = i / steps;
-      const x = startX + (endX - startX) * t;
-      const dy = Math.sin(t * Math.PI * 4) * c.bob;
-      const rot = Math.cos(t * Math.PI * 4) * 6;
+    for (let frameIndex = 0; frameIndex <= frameCount; frameIndex++) {
+      const progress = frameIndex / frameCount;
+      const x = startX + (endX - startX) * progress;
+      const waveAngle = progress * Math.PI * 4;
+      const verticalOffset = Math.sin(waveAngle) * config.bob;
+      const rotation = Math.cos(waveAngle) * 6;
       frames.push({
-        transform: `translate3d(${x}px, ${y + dy}px, 0) scaleX(${flip}) rotate(${rot}deg)`,
-        opacity: t < 0.03 || t > 0.97 ? 0 : 1,
-        offset: t
+        transform: `translate3d(${x}px, ${flightY + verticalOffset}px, 0) scaleX(${horizontalScale}) rotate(${rotation}deg)`,
+        opacity: progress < 0.03 || progress > 0.97 ? 0 : 1,
+        offset: progress
       });
     }
+
     this.sprite.style.display = "block";
-    const anim = this.sprite.animate(frames, { duration: c.duration, easing: "linear" });
-    anim.onfinish = () => { this.sprite.style.display = "none"; };
+    const animation = this.sprite.animate(frames, {
+      duration: config.duration,
+      easing: "linear"
+    });
+    this.animation = animation;
+    animation.onfinish = () => {
+      if (this.animation !== animation) return;
+      this.animation = null;
+      this.sprite.style.display = "none";
+    };
   }
 });
