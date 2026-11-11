@@ -4,10 +4,10 @@ MMM-FlyBy is a [MagicMirror²](https://magicmirror.builders/) module that animat
 
 ## Installation
 
-1. Place this project in your MagicMirror `modules` directory. The folder should be named `MMM-FlyBy`.
-2. Make sure the module's image files are in the `images` directory.
-3. Add the module to your MagicMirror configuration as shown below.
-4. Restart MagicMirror.
+```bash
+cd ~/MagicMirror/modules
+git clone https://github.com/Thomas-Mildner/MMM-FlyBy
+```
 
 ## Configuration
 
