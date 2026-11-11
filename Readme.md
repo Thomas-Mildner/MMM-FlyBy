@@ -20,7 +20,7 @@ Add an entry to the `modules` array in `config/config.js`:
       module: "MMM-FlyBy",
       position: "fullscreen_above",
       config: {
-        images: ["example_airplane.png", "example_airplane2.png"],
+        images: ["airplane.png", "ghost.png"],
         firstDelay: 1000,
         interval: 10000,
         duration: 9000,
@@ -35,7 +35,7 @@ The module can be configured with these options:
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `image` | `"example_airplane.png"` | Image to display, located in the module's `images` directory. |
+| `image` | `"airplane.png"` | Image to display, located in the module's `images` directory. |
 | `images` | `[]` | Optional list of image filenames. When non-empty, one is chosen at random for each flight, overriding `image` for that flight. |
 | `size` | `160` | Image width in pixels. |
 | `interval` | `300000` | Time between flights in milliseconds (5 minutes). |
@@ -56,7 +56,7 @@ For example, to randomly use the included images and show stars:
 	module: "MMM-FlyBy",
 	position: "fullscreen_above",
 	config: {
-		images: ["example_airplane.png"],
+		images: ["ghost.png"],
 		showStars: true
 	}
 }

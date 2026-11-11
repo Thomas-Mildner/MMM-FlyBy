@@ -3,7 +3,7 @@
  */
 Module.register("MMM-FlyBy", {
   defaults: {
-    image: "example_airplane.png",     // Datei in modules/MMM-FlyBy/images/ (eigenes Bild, transparenter Hintergrund)
+    image: "airplane.png",     // Datei in modules/MMM-FlyBy/images/ (eigenes Bild, transparenter Hintergrund)
     images: [],
     size: 160,             // Breite in px
     interval: 5 * 60 * 1000, // alle 5 Minuten
