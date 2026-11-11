@@ -4,23 +4,29 @@ MMM-FlyBy is a [MagicMirror²](https://magicmirror.builders/) module that animat
 
 ## Installation
 
-1. Place this project in your MagicMirror `modules` directory. The folder should be named `MMM-FlyBy`.
-2. Make sure the module's image files are in the `images` directory.
-3. Add the module to your MagicMirror configuration as shown below.
-4. Restart MagicMirror.
+```bash
+cd ~/MagicMirror/modules
+git clone https://github.com/Thomas-Mildner/MMM-FlyBy
+```
 
 ## Configuration
 
 Add an entry to the `modules` array in `config/config.js`:
 
 ```js
-{
-	module: "MMM-FlyBy",
-	position: "fullscreen_above",
-	config: {
-		image: "skye.png"
-	}
-}
+  {
+      module: "MMM-FlyBy",
+      position: "fullscreen_above",
+      config: {
+        images: ["skye.png", "chase.png", "marshal.png", "zooma.png"],
+        firstDelay: 1000,
+        interval: 10000,
+        duration: 9000,
+        showSparkles: false,
+        showStars: true,
+        nightHours: null
+      }
+    },
 ```
 
 The module can be configured with these options:
