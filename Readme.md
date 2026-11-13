@@ -26,6 +26,7 @@ Add an entry to the `modules` array in `config/config.js`:
       position: "fullscreen_above",
       config: {
         images: ["airplane.png", "ghost.png"],
+        motionProfile: "gentle",
         firstDelay: 1000,
         interval: 10000,
         duration: 9000,
@@ -49,6 +50,7 @@ The module can be configured with these options:
 | `minY` | `10` | Top of the flight-height range, as a percentage of the screen height. |
 | `maxY` | `60` | Bottom of the flight-height range, as a percentage of the screen height. |
 | `bob` | `25` | Vertical wave amount in pixels. |
+| `motionProfile` | `"wave"` | Flight style: `"straight"` for no bob or rotation, `"gentle"` for a smaller one-cycle wave, or `"wave"` for the default two-cycle wave. |
 | `showSparkles` | `true` | Show sparkles in the character's trail. |
 | `showStars` | `false` | Show stars in the character's trail. |
 | `randomDirection` | `true` | Randomly choose left-to-right or right-to-left. Set to `false` to always fly left-to-right. |
