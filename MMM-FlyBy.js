@@ -12,6 +12,7 @@ Module.register("MMM-FlyBy", {
     minY: 10,              // Höhe in % (oben)
     maxY: 60,              // Höhe in % (unten)
     bob: 25,               // Auf-und-ab in px
+    motionProfile: "wave",
     showSparkles: true,
     showStars: false,
     randomDirection: true, // links→rechts oder rechts→links
@@ -91,6 +92,18 @@ Module.register("MMM-FlyBy", {
       : currentHour >= startHour && currentHour < endHour;
   },
 
+  getMotionProfile() {
+    switch (this.config.motionProfile) {
+      case "straight":
+        return { cycles: 0, bobScale: 0, rotation: 0 };
+      case "gentle":
+        return { cycles: 1, bobScale: 0.5, rotation: 3 };
+      case "wave":
+      default:
+        return { cycles: 2, bobScale: 1, rotation: 6 };
+    }
+  },
+
   fly() {
     if (!this.sprite || !this.imageElement || this.isNight()) return;
     if (this.animation && this.animation.playState === "running") return;
@@ -109,15 +122,16 @@ Module.register("MMM-FlyBy", {
     const startX = leftToRight ? -config.size : viewportWidth + config.size;
     const endX = leftToRight ? viewportWidth + config.size : -config.size;
     const horizontalScale = leftToRight ? 1 : -1;
+    const motionProfile = this.getMotionProfile();
 
     const frameCount = 96;
     const frames = [];
     for (let frameIndex = 0; frameIndex <= frameCount; frameIndex++) {
       const progress = frameIndex / frameCount;
       const x = startX + (endX - startX) * progress;
-      const waveAngle = progress * Math.PI * 4;
-      const verticalOffset = Math.sin(waveAngle) * config.bob;
-      const rotation = Math.cos(waveAngle) * 6;
+      const waveAngle = progress * Math.PI * 2 * motionProfile.cycles;
+      const verticalOffset = Math.sin(waveAngle) * config.bob * motionProfile.bobScale;
+      const rotation = Math.cos(waveAngle) * motionProfile.rotation;
       frames.push({
         transform: `translate3d(${x}px, ${flightY + verticalOffset}px, 0) scaleX(${horizontalScale}) rotate(${rotation}deg)`,
         opacity: progress < 0.03 || progress > 0.97 ? 0 : 1,
