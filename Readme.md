@@ -68,3 +68,11 @@ For example, to randomly use the included images and show stars:
 ```
 
 Custom images can also be added to the module's `images` directory and referenced by filename in `image` or `images`. Transparent PNG images work well for this animation.
+
+## Releases
+
+Releases and `CHANGELOG.md` are managed by [Release Please](https://github.com/googleapis/release-please). Push commits using the Conventional Commits format to `main`. Release Please opens a pull request with the version update and generated changelog; merging that pull request publishes the GitHub release.
+
+- `feat: add configurable flight speed` creates a minor release.
+- `fix: correct flight direction` creates a patch release.
+- `feat!: change the configuration format` creates a major release for a breaking change.

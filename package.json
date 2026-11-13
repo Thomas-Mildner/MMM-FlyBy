@@ -1,0 +1,20 @@
+{
+	"name": "mmm-flyby",
+	"version": "1.0.0",
+	"description": "A MagicMirror module that animates images flying across the screen.",
+	"main": "MMM-FlyBy.js",
+	"scripts": {
+		"check": "node --check MMM-FlyBy.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Thomas-Mildner/MMM-FlyBy.git"
+	},
+	"keywords": [
+		"magicmirror",
+		"magicmirror-module",
+		"animation"
+	],
+	"license": "MIT",
+	"author": "Thomas Mildner"
+}
