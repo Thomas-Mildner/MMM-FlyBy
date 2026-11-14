@@ -13,7 +13,14 @@
 	"keywords": [
 		"magicmirror",
 		"magicmirror-module",
-		"animation"
+		"magic-mirror",
+		"smart-mirror",
+		"animation",
+		"flying-animation",
+		"image-animation",
+		"screen-overlay",
+		"custom-images",
+		"random-images"
 	],
 	"license": "MIT",
 	"author": "Thomas Mildner"
