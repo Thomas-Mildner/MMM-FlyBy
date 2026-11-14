@@ -47,8 +47,8 @@ The module can be configured with these options:
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `image` | `"airplane.png"` | Image to display, located in the module's `images` directory. |
-| `images` | `[]` | Optional list of image filenames. When non-empty, one is chosen at random for each flight, overriding `image` for that flight. |
+| `image` | `"airplane.png"` | The default image, used for every flight when `images` is empty. It is also used as a fallback if a randomly selected image cannot be loaded. |
+| `images` | `[]` | Optional list of image filenames. When non-empty, one entry is selected at random for each flight and replaces `image` for that flight. |
 | `size` | `160` | Image width in pixels. |
 | `interval` | `300000` | Time between flights in milliseconds (5 minutes). |
 | `firstDelay` | `5000` | Delay before the first flight in milliseconds. |
@@ -63,6 +63,8 @@ The module can be configured with these options:
 | `respectReducedMotion` | `true` | Skip flights when the operating system requests reduced motion. |
 
 Numeric settings are checked when the module initializes. Invalid values use their documented defaults; invalid filenames in `images` are ignored. If an image cannot be loaded, the module logs a warning and falls back to `image`.
+
+Use `image` when you want the same picture on every flight. Use `images` when you want the picture to vary. Each flight makes a new, independent random selection from the `images` array; every array entry has the same chance, so the same image may appear on consecutive flights. Repeating a filename in the array gives it a proportionally higher chance of being selected. When `images` contains at least one valid filename, `image` is only used as the fallback.
 
 For example, to randomly use the included images and show stars:
 
