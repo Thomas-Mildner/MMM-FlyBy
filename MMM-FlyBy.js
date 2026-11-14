@@ -1,26 +1,88 @@
 /* MagicMirror² Modul: MMM-FlyBy
  * Lässt eine Figur (eigenes Bild) in Intervallen über den Spiegel fliegen.
  */
+const MMM_FLYBY_DEFAULT_CONFIG = {
+  image: "airplane.png",
+  images: [],
+  size: 160,
+  interval: 5 * 60 * 1000,
+  firstDelay: 5000,
+  duration: 12000,
+  minY: 10,
+  maxY: 60,
+  bob: 25,
+  showSparkles: true,
+  showStars: false,
+  randomDirection: true,
+  nightHours: [23, 6],
+  respectReducedMotion: true
+};
+
 Module.register("MMM-FlyBy", {
-  defaults: {
-    image: "airplane.png",     // Datei in modules/MMM-FlyBy/images/ (eigenes Bild, transparenter Hintergrund)
-    images: [],
-    size: 160,             // Breite in px
-    interval: 5 * 60 * 1000, // alle 5 Minuten
-    firstDelay: 5000,      // erster Flug nach 5 s
-    duration: 12000,       // Flugdauer in ms
-    minY: 10,              // Höhe in % (oben)
-    maxY: 60,              // Höhe in % (unten)
-    bob: 25,               // Auf-und-ab in px
-    showSparkles: true,
-    showStars: false,
-    randomDirection: true, // links→rechts oder rechts→links
-    nightHours: [23, 6]    // keine Flüge in dieser Zeitspanne, null = immer
-  },
+  defaults: MMM_FLYBY_DEFAULT_CONFIG,
 
   getStyles() { return ["MMM-FlyBy.css"]; },
 
+  normalizeConfig() {
+    const config = { ...MMM_FLYBY_DEFAULT_CONFIG, ...this.config };
+    const warn = (key, reason) => {
+      console.warn(`[MMM-FlyBy] Invalid config option "${key}" (${reason}); using its default.`);
+    };
+    const normalizeNumber = (key, isValid) => {
+      if (typeof config[key] !== "number" || !Number.isFinite(config[key]) || !isValid(config[key])) {
+        warn(key, "out of range");
+        config[key] = MMM_FLYBY_DEFAULT_CONFIG[key];
+      }
+    };
+
+    if (typeof config.image !== "string" || !config.image.trim()) {
+      warn("image", "expected a non-empty filename");
+      config.image = MMM_FLYBY_DEFAULT_CONFIG.image;
+    }
+    if (!Array.isArray(config.images)) {
+      warn("images", "expected an array of filenames");
+      config.images = [];
+    } else {
+      const validImages = config.images.filter((image) => typeof image === "string" && image.trim());
+      if (validImages.length !== config.images.length) warn("images", "invalid filenames were ignored");
+      config.images = validImages;
+    }
+
+    normalizeNumber("size", (value) => value > 0);
+    normalizeNumber("interval", (value) => value > 0);
+    normalizeNumber("firstDelay", (value) => value >= 0);
+    normalizeNumber("duration", (value) => value > 0);
+    normalizeNumber("minY", (value) => value >= 0 && value <= 100);
+    normalizeNumber("maxY", (value) => value >= 0 && value <= 100);
+    normalizeNumber("bob", (value) => value >= 0);
+
+    if (config.minY > config.maxY) {
+      warn("minY/maxY", "minY must not exceed maxY");
+      config.minY = MMM_FLYBY_DEFAULT_CONFIG.minY;
+      config.maxY = MMM_FLYBY_DEFAULT_CONFIG.maxY;
+    }
+
+    if (config.nightHours !== null && (!Array.isArray(config.nightHours)
+      || config.nightHours.length !== 2
+      || config.nightHours.some((hour) => !Number.isInteger(hour) || hour < 0 || hour > 23))) {
+      warn("nightHours", "expected null or two hours from 0 to 23");
+      config.nightHours = [...MMM_FLYBY_DEFAULT_CONFIG.nightHours];
+    } else if (Array.isArray(config.nightHours)) {
+      config.nightHours = [...config.nightHours];
+    }
+
+    for (const key of ["showSparkles", "showStars", "randomDirection", "respectReducedMotion"]) {
+      if (typeof config[key] !== "boolean") {
+        warn(key, "expected a boolean");
+        config[key] = MMM_FLYBY_DEFAULT_CONFIG[key];
+      }
+    }
+
+    return config;
+  },
+
   getDom() {
+    this.config = this.normalizeConfig();
     const wrapper = document.createElement("div");
     wrapper.className = "flyby-wrapper";
     this.sprite = document.createElement("div");
@@ -53,6 +115,15 @@ Module.register("MMM-FlyBy", {
     image.className = "flyby-image";
     image.src = this.file("images/" + this.config.image);
     image.alt = "";
+    const fallbackImage = image.src;
+    image.addEventListener("error", () => {
+      if (image.src === fallbackImage) {
+        console.warn(`[MMM-FlyBy] Could not load fallback image "${this.config.image}".`);
+        return;
+      }
+      console.warn(`[MMM-FlyBy] Could not load image "${image.src}"; using "${this.config.image}" instead.`);
+      image.src = fallbackImage;
+    });
     this.imageElement = image;
     this.sprite.appendChild(image);
     wrapper.appendChild(this.sprite);
@@ -77,7 +148,16 @@ Module.register("MMM-FlyBy", {
       this.animation.cancel();
       this.animation = null;
     }
-    if (this.sprite) this.sprite.style.display = "none";
+    if (this.sprite) {
+      this.sprite.style.display = "none";
+      this.sprite.style.willChange = "";
+    }
+  },
+
+  prefersReducedMotion() {
+    return this.config.respectReducedMotion
+      && typeof window.matchMedia === "function"
+      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   },
 
   isNight() {
@@ -92,7 +172,7 @@ Module.register("MMM-FlyBy", {
   },
 
   fly() {
-    if (!this.sprite || !this.imageElement || this.isNight()) return;
+    if (!this.sprite || !this.imageElement || this.isNight() || this.prefersReducedMotion()) return;
     if (this.animation && this.animation.playState === "running") return;
 
     const config = this.config;
@@ -110,7 +190,7 @@ Module.register("MMM-FlyBy", {
     const endX = leftToRight ? viewportWidth + config.size : -config.size;
     const horizontalScale = leftToRight ? 1 : -1;
 
-    const frameCount = 96;
+    const frameCount = 24;
     const frames = [];
     for (let frameIndex = 0; frameIndex <= frameCount; frameIndex++) {
       const progress = frameIndex / frameCount;
@@ -126,6 +206,7 @@ Module.register("MMM-FlyBy", {
     }
 
     this.sprite.style.display = "block";
+  this.sprite.style.willChange = "transform";
     const animation = this.sprite.animate(frames, {
       duration: config.duration,
       easing: "linear"
@@ -135,6 +216,7 @@ Module.register("MMM-FlyBy", {
       if (this.animation !== animation) return;
       this.animation = null;
       this.sprite.style.display = "none";
+      this.sprite.style.willChange = "";
     };
   }
 });
