@@ -4,7 +4,8 @@
 	"description": "A MagicMirror module that animates images flying across the screen.",
 	"main": "MMM-FlyBy.js",
 	"scripts": {
-		"check": "node --check MMM-FlyBy.js"
+		"check": "node --check MMM-FlyBy.js",
+		"test": "node --test"
 	},
 	"repository": {
 		"type": "git",

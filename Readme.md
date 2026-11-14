@@ -60,6 +60,9 @@ The module can be configured with these options:
 | `showStars` | `false` | Show stars in the character's trail. |
 | `randomDirection` | `true` | Randomly choose left-to-right or right-to-left. Set to `false` to always fly left-to-right. |
 | `nightHours` | `[23, 6]` | Hours during which flights are suppressed, using the local 24-hour clock. `[23, 6]` suppresses flights from 23:00 until 06:00. Set to `null` to allow flights at all times. |
+| `respectReducedMotion` | `true` | Skip flights when the operating system requests reduced motion. |
+
+Numeric settings are checked when the module initializes. Invalid values use their documented defaults; invalid filenames in `images` are ignored. If an image cannot be loaded, the module logs a warning and falls back to `image`.
 
 For example, to randomly use the included images and show stars:
 

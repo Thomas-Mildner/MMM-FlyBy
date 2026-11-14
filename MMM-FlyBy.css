@@ -1,5 +1,6 @@
 .flyby-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; overflow: hidden; z-index: 999; }
 .flyby-sprite { position: absolute; top: 0; left: 0; will-change: transform; }
+.flyby-sprite { position: absolute; top: 0; left: 0; }
 .flyby-image { position: relative; z-index: 1; display: block; width: 100%; height: auto; }
 .flyby-trail { position: absolute; z-index: 0; top: 42%; left: -32%; width: 52%; height: 22%; pointer-events: none; }
 .flyby-trail::before,
